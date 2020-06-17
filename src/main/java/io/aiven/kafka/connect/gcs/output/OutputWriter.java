@@ -35,7 +35,7 @@ import io.aiven.kafka.connect.gcs.config.OutputField;
 
 public final class OutputWriter {
 
-    private static final byte[] FIELD_SEPARATOR = ",".getBytes(StandardCharsets.UTF_8);
+    private static final byte[] FIELD_SEPARATOR = "$".getBytes(StandardCharsets.UTF_8);
     private static final byte[] RECORD_SEPARATOR = "\n".getBytes(StandardCharsets.UTF_8);
 
     private final List<OutputFieldWriter> writers;
