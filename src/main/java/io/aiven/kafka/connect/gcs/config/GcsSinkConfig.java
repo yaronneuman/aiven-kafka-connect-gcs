@@ -53,6 +53,7 @@ public final class GcsSinkConfig extends AbstractConfig {
 
     private static final String GROUP_FORMAT = "Format";
     public static final String FORMAT_OUTPUT_FIELDS_CONFIG = "format.output.fields";
+    public static final String FORMAT_OUTPUT_HEADERS_CONFIG = "format.output.headers";
     public static final String FORMAT_OUTPUT_FIELDS_VALUE_ENCODING_CONFIG = "format.output.fields.value.encoding";
 
     public static final String NAME_CONFIG = "name";
@@ -272,6 +273,7 @@ public final class GcsSinkConfig extends AbstractConfig {
         final String supportedOutputFields = OutputFieldType.names().stream()
             .map(f -> "'" + f + "'")
             .collect(Collectors.joining(", "));
+
         configDef.define(
             FORMAT_OUTPUT_FIELDS_CONFIG,
             ConfigDef.Type.LIST,
@@ -303,6 +305,21 @@ public final class GcsSinkConfig extends AbstractConfig {
             ConfigDef.Width.NONE,
             FORMAT_OUTPUT_FIELDS_CONFIG,
             FixedSetRecommender.ofSupportedValues(OutputFieldType.names())
+        );
+
+        configDef.define(
+                FORMAT_OUTPUT_HEADERS_CONFIG,
+                ConfigDef.Type.LIST,
+                OutputFieldType.VALUE.name,
+                (name, value) -> {
+                    assert value instanceof List;
+                },
+                ConfigDef.Importance.MEDIUM,
+                "Headers keys to save if headers is part of the request fields under " + FORMAT_OUTPUT_FIELDS_CONFIG,
+                GROUP_FORMAT,
+                formatGroupCounter++,
+                ConfigDef.Width.NONE,
+                FORMAT_OUTPUT_HEADERS_CONFIG
         );
 
         final String supportedValueFieldEncodingTypes = CompressionType.names().stream()
@@ -397,6 +414,10 @@ public final class GcsSinkConfig extends AbstractConfig {
             result.add(new OutputField(fieldType, encodingType));
         }
         return result;
+    }
+
+    public final List<String> getRequestedHeaders() {
+        return getList(FORMAT_OUTPUT_HEADERS_CONFIG);
     }
 
     public final String getPrefix() {

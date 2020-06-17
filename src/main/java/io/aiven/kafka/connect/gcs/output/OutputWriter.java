@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
+import io.aiven.kafka.connect.gcs.config.GcsSinkConfig;
 import org.apache.kafka.connect.errors.ConnectException;
 import org.apache.kafka.connect.sink.SinkRecord;
 
@@ -71,7 +72,9 @@ public final class OutputWriter {
     public static final class Builder {
         private final List<OutputFieldWriter> writers = new ArrayList<>();
 
-        public final Builder addFields(final Collection<OutputField> fields) {
+        public final Builder addFields(GcsSinkConfig config) {
+            final Collection<OutputField> fields = config.getOutputFields();
+            final List<String> headers = config.getRequestedHeaders();
             Objects.requireNonNull(fields, "fields cannot be null");
 
             for (final OutputField field : fields) {
@@ -98,6 +101,10 @@ public final class OutputWriter {
 
                     case OFFSET:
                         writers.add(new OffsetWriter());
+                        break;
+
+                    case HEADERS:
+                        writers.add(new HeadersWriter(headers));
                         break;
 
                     case TIMESTAMP:

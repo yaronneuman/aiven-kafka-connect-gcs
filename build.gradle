@@ -28,6 +28,8 @@ plugins {
 
     // https://docs.gradle.org/current/userguide/idea_plugin.html
     id 'idea'
+
+    id 'com.github.johnrengelman.shadow' version '5.1.0'
 }
 
 repositories {
@@ -38,9 +40,15 @@ sourceCompatibility = "8"
 targetCompatibility = "8"
 
 ext {
-    kafkaVersion = "1.0.2"
+    kafkaVersion = "1.1.0"
 
     testcontainersVersion = "1.11.1"
+}
+
+
+shadowJar {
+    zip64 true
+    mergeServiceFiles()
 }
 
 distributions {
@@ -80,8 +88,8 @@ dependencies {
         exclude group: "com.google.guava", module: "guava"
     }
 
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.11.0"
     implementation "com.google.guava:guava:27.1-jre"
-
     implementation "org.slf4j:slf4j-api:1.7.25"
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.4.1'

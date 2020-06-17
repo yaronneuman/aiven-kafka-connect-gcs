@@ -82,7 +82,7 @@ public final class GcsSinkTask extends SinkTask {
     }
 
     private void initRest() {
-        this.outputWriter = OutputWriter.builder().addFields(config.getOutputFields()).build();
+        this.outputWriter = OutputWriter.builder().addFields(config).build();
         try {
             this.recordGrouper = RecordGrouperFactory.newRecordGrouper(config);
         } catch (final Exception e) {
